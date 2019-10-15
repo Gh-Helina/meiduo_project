@@ -25,7 +25,7 @@ SECRET_KEY = 'eug-k6vq8xwerhws9%6q&*!06253+&3)*bjw15g^e1r3o_b34l'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.meiduo.site','127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +70,7 @@ ROOT_URLCONF = 'meiduo_mall.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
