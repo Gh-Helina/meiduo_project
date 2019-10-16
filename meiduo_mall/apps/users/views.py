@@ -46,7 +46,7 @@ class RegisterView(View):
         if not re.match(r'^1[3-9]\d{9}$', mobile):
             return HttpResponseBadRequest('手机号格式错误')
         # 3.保存数据
-        # 导入User
+        # 导入User 先输入导入
         user=User.objects.create_user(username=username,
                                  password=password,
                                  mobile=mobile)
