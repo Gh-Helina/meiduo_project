@@ -33,4 +33,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'test/$',test),
     url(r'^',include('apps.users.urls')),
+    url(r'^',include(('apps.contents.urls','apps.contents'),namespace='contents'))
 ]

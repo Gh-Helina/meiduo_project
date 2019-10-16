@@ -1,9 +1,10 @@
 import re
 
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
+from django.urls import reverse
 from django.views import View
 
 from apps.users.models import User
@@ -48,6 +49,7 @@ class RegisterView(View):
         user=User.objects.create_user(username=username,
                                  password=password,
                                  mobile=mobile)
+        return redirect(reverse('contents:index'))
         #     4.返回响应
         return HttpResponse('注册成功')
 
