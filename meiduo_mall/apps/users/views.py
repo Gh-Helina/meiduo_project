@@ -1,6 +1,7 @@
 import re
 
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -49,7 +50,9 @@ class RegisterView(View):
         user=User.objects.create_user(username=username,
                                  password=password,
                                  mobile=mobile)
-
+        '''
+           注册成功后直接登录跳转到首页
+           '''
         # 状态保持
         from django.contrib.auth import login
         # user用户对象
@@ -57,9 +60,18 @@ class RegisterView(View):
         return redirect(reverse('contents:index'))
         #     4.返回响应
         return HttpResponse('注册成功')
+
     '''
-    注册成功后直接登录跳转到首页
+    前端获取用户名需要发送ajax数据给后端
+    后端判断用户名重复
     '''
+class UsernameCountView(View):
+    """判断用户名是否重复注册"""
+    def get(self,request,username):
+        # 获取前端提交数据
+        # 查看数量 1重复,0不重复
+        count=User.objects.filter(username=username).count()
+        return JsonResponse({'count':count})
 
 
 

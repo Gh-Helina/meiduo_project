@@ -61,6 +61,19 @@ var vm = new Vue({
             var re = /^[a-zA-Z0-9_-]{5,20}$/;
             if (re.test(this.username)) {
                 this.error_name = false;
+                前端发送给后端的ajax
+                // 发送axios请求
+                let url=''
+
+                axios.get(url).then(respose=>{
+                    alert('ok')
+
+                }).catch(error=>{
+                    alert('Error')
+
+                });
+                // then成功回调
+                // catch失败回调
             } else {
                 this.error_name_message = '请输入5-20个字符的用户名';
                 this.error_name = true;
