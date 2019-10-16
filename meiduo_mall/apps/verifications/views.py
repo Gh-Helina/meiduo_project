@@ -1,4 +1,6 @@
 from django.http import HttpResponse
+from django.http import HttpResponseBadRequest
+from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -8,9 +10,8 @@ from django.shortcuts import render
 # 4.返回响应
 from django.views import View
 
-
-def Httpesponse():
-    pass
+###############图片验证#########################
+from libs.yuntongxun.sms import CCP
 
 
 class ImageView(View):
@@ -32,4 +33,43 @@ class ImageView(View):
         # 4.返回图片
         # content-type=image/jpeg是告诉浏览器是图片类型
         return HttpResponse(image, content_type='image/jpeg')
-        pass
+
+
+################短信发送功能##########################
+# image_codes/mobile/?image_code=xxx&image_code_id=xxx
+class SmsCodeView(View):
+    def get(self, request, mobile):
+        # 1.获取数据
+        # 1.1 uuid
+        # 1.2 用户自己输入的
+        image_code = request.GET.get('image_code')
+        image_code_id = request.GET.get('image_code_id')
+        # 2.验证数据
+        if not all([image_code, image_code_id]):
+            return HttpResponseBadRequest('参数不全')
+        # 3.比对数据和redis里的
+        #     3.1 连接数据库
+        from django_redis import get_redis_connection
+        # 'code'setting里配置redis数据库里面的,数据库使用的是2
+        redis_con = get_redis_connection('code')
+        #     3.2 获取数据库的image_code_id
+        redis_text = redis_con.get('image_%s' % image_code_id)
+        # 判断时效
+        if redis_text is None:
+            return HttpResponseBadRequest('图片验证码已过期')
+        # 比对数据
+        # 用户用小写
+        if redis_text.decode().lower() != image_code.lower():
+            return HttpResponseBadRequest('图片验证码不一致')
+
+        # 4.生成随机短信验证码  本次6位就行
+        from random import randint
+        sms_code = '%06d' % randint(0, 999999)
+        # redis_con.setex(key,seconds,value)
+        # 保存到redis
+        redis_con.setex('sms_%s' % mobile, 120, sms_code)
+
+        # 5.发送验证码
+        CCP().send_template_sms(mobile, [sms_code, 5], 1)
+        # 返回json，里面是字典形式
+        return JsonResponse({'image': 'ok', 'code': '0'})
