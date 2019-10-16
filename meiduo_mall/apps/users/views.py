@@ -49,7 +49,17 @@ class RegisterView(View):
         user=User.objects.create_user(username=username,
                                  password=password,
                                  mobile=mobile)
+
+        # 状态保持
+        from django.contrib.auth import login
+        # user用户对象
+        login(request,user)
         return redirect(reverse('contents:index'))
         #     4.返回响应
         return HttpResponse('注册成功')
+    '''
+    注册成功后直接登录跳转到首页
+    '''
+
+
 
