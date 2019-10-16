@@ -61,17 +61,25 @@ var vm = new Vue({
             var re = /^[a-zA-Z0-9_-]{5,20}$/;
             if (re.test(this.username)) {
                 this.error_name = false;
-                前端发送给后端的ajax
+                // 前端发送给后端的ajax
                 // 发送axios请求
-                let url=''
+                // 开始用的
+                // let url='http://www.meiduo.site:8000/usernames/'iteast'/';
+                let url='http://www.meiduo.site:8000/usernames/'+this.username+'/';
 
-                axios.get(url).then(respose=>{
-                    alert('ok')
-
+                axios.get(url).then(response=>{
+                    console.log(response)
+                    console.log(response.data.count)
+                    if(response.data.count == 1){
+                        this.error_name=true
+                        this.error_name_message='用户名已存在'
+                    }else{
+                        this.error_name=false
+                        // this.error_name_message='用户名不能超过5-20个字符'
+                    }
                 }).catch(error=>{
-                    alert('Error')
-
-                });
+                    console.log(error)
+                })
                 // then成功回调
                 // catch失败回调
             } else {
