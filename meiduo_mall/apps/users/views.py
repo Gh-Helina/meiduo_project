@@ -72,6 +72,9 @@ class UsernameCountView(View):
         # 查看数量 1重复,0不重复
         count=User.objects.filter(username=username).count()
         return JsonResponse({'count':count})
-
+class MobilCountView(View):
+    def get(self,request,mobile):
+        count=User.objects.filter(mobile=mobile).count()
+        return JsonResponse({'count':count})
 
 

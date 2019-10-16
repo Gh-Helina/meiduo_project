@@ -111,6 +111,23 @@ var vm = new Vue({
             var re = /^1[345789]\d{9}$/;
             if (re.test(this.mobile)) {
                 this.error_phone = false;
+                // let url='http://www.meiduo.site:8000/mobiles/13454653244/';
+                let url='http://www.meiduo.site:8000/mobiles/'+this.mobile+'/';
+                axios.get(url).then(response=>{
+                    console.log(response)
+                    console.log(response.data.count)
+                    if(response.data.count == 1){
+                        this.error_mobile=true
+                        this.error_mobile_message='手机号已存在'
+                    }else{
+                        this.error_mobile=false
+                        // this.error_mobile_message='手机号不能超过11个字符'
+                    }
+                }).catch(error=>{
+                    console.log(error)
+                })
+                // then成功回调
+                // catch失败回调
             } else {
                 this.error_mobile_message = '您输入的手机号格式不正确';
                 this.error_phone = true;
