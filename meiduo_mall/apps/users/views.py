@@ -1,5 +1,6 @@
 import re
 
+from django.contrib.auth import login
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -31,10 +32,10 @@ class RegisterView(View):
         mobile = request.POST.get('mobile')
         #     2.验证数据
         # 2.1 四个参数都有值
-        if not all([username, password, password2,mobile]):
+        if not all([username, password, password2, mobile]):
             return HttpResponseBadRequest('参数不全')
         # 2.2 判断用户名是否符合规则,是否重复
-        if not re.match(r'^[a-zA-Z0-9]{5,20}$',username):
+        if not re.match(r'^[a-zA-Z0-9]{5,20}$', username):
             return HttpResponseBadRequest('用户名不满足要求')
         # 2.3 判断密码是否符合规则
         if not re.match(r'^[0-9A-Za-z]{8,20}$', password):
@@ -47,16 +48,16 @@ class RegisterView(View):
             return HttpResponseBadRequest('手机号格式错误')
         # 3.保存数据
         # 导入User 先输入导入
-        user=User.objects.create_user(username=username,
-                                 password=password,
-                                 mobile=mobile)
+        user = User.objects.create_user(username=username,
+                                        password=password,
+                                        mobile=mobile)
         '''
            注册成功后直接登录跳转到首页
            '''
         # 状态保持
         from django.contrib.auth import login
         # user用户对象  上面接收保存数据的变量
-        login(request,user)
+        login(request, user)
         return redirect(reverse('contents:index'))
         #     4.返回响应
         return HttpResponse('注册成功')
@@ -65,18 +66,53 @@ class RegisterView(View):
     前端获取用户名需要发送ajax数据给后端
     后端判断用户名重复
     '''
+
+
 class UsernameCountView(View):
     """判断用户名是否重复注册"""
-    def get(self,request,username):
+
+    def get(self, request, username):
         # 获取前端提交数据
         # 查看数量 1重复,0不重复
-        count=User.objects.filter(username=username).count()
-        return JsonResponse({'count':count})
+        count = User.objects.filter(username=username).count()
+        return JsonResponse({'count': count})
+
 
 class MobilCountView(View):
     """判断手机号是否重复注册"""
-    def get(self,request,mobile):
-        count=User.objects.filter(mobile=mobile).count()
-        return JsonResponse({'count':count})
+
+    def get(self, request, mobile):
+        count = User.objects.filter(mobile=mobile).count()
+        return JsonResponse({'count': count})
 
 
+#############用户登录####################
+class LoginVies(View):
+    def get(self, request):
+        return render(request, 'login.html')
+
+    def post(self, request):
+        # 1.获取数据
+        username = request.POST.get('username')
+        password = request.POST.get('pwd')
+        rememberd = request.POST.get('remembered')
+
+        # 2. 验证数据
+        if not all([username, password]):
+            return HttpResponseBadRequest('参数不全')
+        # 3.判断用户名密码是否一致
+        from django.contrib.auth import authenticate
+        user = authenticate(username=username, password=password)
+        if user == None:
+            return HttpResponseBadRequest('用户名或密码错误')
+
+        # 4. 状态保持
+        login(request, user)
+        # 5.记住登录
+        if rememberd == 'on':
+            # 记住登录，俩周后失效
+            request.session.set_expiry(None)
+        else:
+            # 不记住登录，关闭浏览器失效
+            request.session.set_expiry(0)
+        return redirect(reverse('contents:index'))

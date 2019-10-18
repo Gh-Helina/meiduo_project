@@ -65,7 +65,7 @@ class SmsCodeView(View):
 
         send_flag=redis_con.get('send_flag_%s'%mobile)
         if send_flag:
-            return JsonResponse({'errmsg':'发送太频繁，稍后重试','code':'4001'})
+            return JsonResponse({'errmsg':'发送太频繁，稍后重试','code':'4002'})
 
         # 4.生成随机短信验证码  本次6位就行
         from random import randint
