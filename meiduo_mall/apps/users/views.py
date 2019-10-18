@@ -142,20 +142,23 @@ class LoginVies(View):
 #     GET logout
 # """
 #
-# class LogoutView(View):
+class LogoutView(View):
 #
-#     def get(self,request):
+    def get(self,request):
 #
 #         # request.session.flush()
 #
-#         from django.contrib.auth import logout
-#         logout(request)
+        from django.contrib.auth import logout
+        logout(request)
 #
 #         #删除cookie中的username
-#
-#         response =  redirect(reverse('contents:index'))
+#         return redirect(reverse('contents:index'))
+        response =  redirect(reverse('contents:index'))
 #
 #         # response.set_cookie('username',None,max_age=0)
-#         response.delete_cookie('username')
+        response.delete_cookie('username')
 #
-#         return response
+        return response
+
+
+###########判断是否登录############
