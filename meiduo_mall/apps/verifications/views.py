@@ -11,7 +11,9 @@ from django.shortcuts import render
 from django.views import View
 
 ###############图片验证#########################
+from apps.verifications.constants import SMS_CODE_EXPIRES_SECONDS, SMS_FLAG_CODE_EXPIRES_SECONDS
 from libs.yuntongxun.sms import CCP
+from utils.response_code import RETCODE
 
 
 class ImageView(View):
@@ -29,7 +31,8 @@ class ImageView(View):
         # redis_con.setex(key, seconds, value)
         # 3.将uuid和内容保存在数据库
         # 设置过期时间
-        redis_con.setex('image_%s' % uuid, 120, text)
+        # SMS_CODE_EXPIRES_SECONDS定义的变量在constants.py里，代表过期时间
+        redis_con.setex('image_%s' % uuid, SMS_CODE_EXPIRES_SECONDS, text)
         # 4.返回图片
         # content-type=image/jpeg是告诉浏览器是图片类型
         return HttpResponse(image, content_type='image/jpeg')
@@ -72,10 +75,11 @@ class SmsCodeView(View):
         sms_code = '%06d' % randint(0, 999999)
         # redis_con.setex(key,seconds,value)
         # 保存到redis
-        redis_con.setex('sms_%s' % mobile, 120, sms_code)
+        # SMS_CODE_EXPIRES_SECONDS定义的变量在constants.py里，代表过期时间
+        redis_con.setex('sms_%s' % mobile, SMS_CODE_EXPIRES_SECONDS, sms_code)
 
         # 添加一个标记
-        redis_con.setex('send_flag_%s' % mobile, 60, 1)
+        redis_con.setex('send_flag_%s' % mobile, SMS_FLAG_CODE_EXPIRES_SECONDS, 1)
 
 
         # 5.发送验证码
@@ -86,4 +90,5 @@ class SmsCodeView(View):
         #任务.delay()#将celery添加到中间中
         send_sms_code.delay(mobile,sms_code)
         # 返回json，里面是字典形式
-        return JsonResponse({'image': 'ok', 'code': '0'})
+        # RETCODE在utils中response_code中错误代码定义的类
+        return JsonResponse({'image': 'ok', 'code': RETCODE.OK})

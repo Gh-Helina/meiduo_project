@@ -100,14 +100,16 @@ class LoginVies(View):
         # 2. 验证数据
         if not all([username, password]):
             return HttpResponseBadRequest('参数不全')
+
         # 3.判断用户名密码是否一致
         from django.contrib.auth import authenticate
         user = authenticate(username=username, password=password)
-        if user == None:
+        if user is None:
             return HttpResponseBadRequest('用户名或密码错误')
 
         # 4. 状态保持
         login(request, user)
+
         # 5.记住登录
         if rememberd == 'on':
             # 记住登录，俩周后失效
