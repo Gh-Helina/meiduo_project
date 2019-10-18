@@ -215,5 +215,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # 指定自定义的用户认证后端
 AUTHENTICATION_BACKENDS = [
-    'utils.users.UsernameMobileAuthBackend',
+    # 'django.contrib.auth.backends.ModelBackend' #默认配置
+    'utils.users.UsernameMobileModelBackend',
 ]
+#
+# LOGIN_URL='/login/'

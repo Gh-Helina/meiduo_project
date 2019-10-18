@@ -32,7 +32,7 @@ def test(request):
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'test/$',test),
-    url(r'^',include('apps.users.urls')),
+    url(r'^',include(('apps.users.urls','apps.users'),namespace='users')),
     # 跳转首页
     url(r'^',include(('apps.contents.urls','apps.contents'),namespace='contents')),
     # 图片验证

@@ -117,4 +117,45 @@ class LoginVies(View):
         else:
             # 不记住登录，关闭浏览器失效
             request.session.set_expiry(0)
-        return redirect(reverse('contents:index'))
+        # return redirect(reverse('contents:index'))
+
+##############首页用户名展示#######################
+        # 响应注册结果
+        response = redirect(reverse('contents:index'))
+
+        # 设置cookie
+        response.set_cookie('username', user.username, max_age=3600 * 24 * 14)
+
+        return response
+#
+#     """
+# 1.功能分析
+#     用户行为:  点击退出按钮
+#     前端行为:  前端发送请求
+#     后端行为:  实现退出功能
+#
+# 2. 分析后端实现的大体步骤
+#         ① 清除状态保持的信息
+#         ② 跳转到指定页面
+#
+# 3.确定请求方式和路由
+#     GET logout
+# """
+#
+# class LogoutView(View):
+#
+#     def get(self,request):
+#
+#         # request.session.flush()
+#
+#         from django.contrib.auth import logout
+#         logout(request)
+#
+#         #删除cookie中的username
+#
+#         response =  redirect(reverse('contents:index'))
+#
+#         # response.set_cookie('username',None,max_age=0)
+#         response.delete_cookie('username')
+#
+#         return response
