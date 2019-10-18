@@ -55,7 +55,7 @@ class RegisterView(View):
            '''
         # 状态保持
         from django.contrib.auth import login
-        # user用户对象
+        # user用户对象  上面接收保存数据的变量
         login(request,user)
         return redirect(reverse('contents:index'))
         #     4.返回响应
@@ -72,7 +72,9 @@ class UsernameCountView(View):
         # 查看数量 1重复,0不重复
         count=User.objects.filter(username=username).count()
         return JsonResponse({'count':count})
+
 class MobilCountView(View):
+    """判断手机号是否重复注册"""
     def get(self,request,mobile):
         count=User.objects.filter(mobile=mobile).count()
         return JsonResponse({'count':count})

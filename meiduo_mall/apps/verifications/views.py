@@ -70,6 +70,11 @@ class SmsCodeView(View):
         redis_con.setex('sms_%s' % mobile, 120, sms_code)
 
         # 5.发送验证码
-        CCP().send_template_sms(mobile, [sms_code, 5], 1)
+        # CCP().send_template_sms(mobile, [sms_code, 5], 1)
+
+        #将celery添加到中间中
+        from  celery_tasks.sms.tasks import send_sms_code
+        #任务.delay()#将celery添加到中间中
+        send_sms_code.delay(mobile,sms_code)
         # 返回json，里面是字典形式
         return JsonResponse({'image': 'ok', 'code': '0'})

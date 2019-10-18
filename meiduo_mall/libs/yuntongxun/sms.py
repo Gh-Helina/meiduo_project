@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 # 以后用,不运行main函数
-from .CCPRestSDK import REST
+# from .CCPRestSDK import REST
 # 想要运行次文件,导入路径
-# from libs.yuntongxun.CCPRestSDK import REST
+from libs.yuntongxun.CCPRestSDK import REST
 # 说明：主账号，登陆云通讯网站后，可在"控制台-应用"中看到开发者主账号ACCOUNT SID
 _accountSid = '8a216da86dce009c016dd3f55be7051e'
 

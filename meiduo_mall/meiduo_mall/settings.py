@@ -121,7 +121,7 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
-    "code": {  # session
+    "code": {  # code
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
@@ -174,7 +174,7 @@ LOGGING = {
 }
 
 ##########指定用户模型类#############
-                # '子应用名.模型类名'
+# '子应用名.模型类名'
 AUTH_USER_MODEL = 'users.User'
 
 # Password validation
