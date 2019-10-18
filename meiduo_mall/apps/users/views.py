@@ -162,3 +162,23 @@ class LogoutView(View):
 
 
 ###########判断是否登录############
+# class UserCenterInfoView(View):
+#     def get(self,request):
+#       request.user 请求中 有用户的信息
+        # is_authenticated 判断用户是否为登陆用户
+        # 登陆用户为True
+    # 未登陆用户为False
+        # if request.user.is_authenticated:
+        #     return render(request,'user_center_info.html')
+        # else:
+        #     return redirect(reverse('users:login'))
+#         return render(request,'user_center_info.html')
+#第二种
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class UserCenterInfoView(LoginRequiredMixin,View):
+
+    def get(self,request):
+
+
+        return render(request,'user_center_info.html')

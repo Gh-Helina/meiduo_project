@@ -18,6 +18,7 @@
         <div class="header">
             <div class="welcome fl">欢迎来到美多商城!</div>
             <div class="fr">
+
                 <div v-if="username" class="login_btn fl">
                     欢迎您：<em>[[ username ]]</em>
                     <span>|</span>
@@ -52,7 +53,7 @@
 
                 <div class="user_link fl">
                     <span>|</span>
-                    <a href="#">用户中心</a>
+                    <a href="{{ url('users:center') }}">用户中心</a>
                     <span>|</span>
                     <a href="../static/cart.html">我的购物车</a>
                     <span>|</span>

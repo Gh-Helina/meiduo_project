@@ -218,5 +218,5 @@ AUTHENTICATION_BACKENDS = [
     # 'django.contrib.auth.backends.ModelBackend' #默认配置
     'utils.users.UsernameMobileModelBackend',
 ]
-#
-# LOGIN_URL='/login/'
+#用户是否登录
+LOGIN_URL='/login/'
