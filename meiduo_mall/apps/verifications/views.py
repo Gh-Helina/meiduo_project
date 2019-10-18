@@ -62,12 +62,21 @@ class SmsCodeView(View):
         if redis_text.decode().lower() != image_code.lower():
             return HttpResponseBadRequest('图片验证码不一致')
 
+
+        send_flag=redis_con.get('send_flag_%s'%mobile)
+        if send_flag:
+            return JsonResponse({'errmsg':'发送太频繁，稍后重试','code':'4001'})
+
         # 4.生成随机短信验证码  本次6位就行
         from random import randint
         sms_code = '%06d' % randint(0, 999999)
         # redis_con.setex(key,seconds,value)
         # 保存到redis
         redis_con.setex('sms_%s' % mobile, 120, sms_code)
+
+        # 添加一个标记
+        redis_con.setex('send_flag_%s' % mobile, 60, 1)
+
 
         # 5.发送验证码
         # CCP().send_template_sms(mobile, [sms_code, 5], 1)
