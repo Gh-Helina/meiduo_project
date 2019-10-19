@@ -37,4 +37,6 @@ urlpatterns = [
     url(r'^',include(('apps.contents.urls','apps.contents'),namespace='contents')),
     # 图片验证
     url(r'^',include(('apps.verifications.urls','apps.verifications'),namespace='verifications')),
+    #QQ登录
+    url(r'^',include(('apps.oauth.urls','apps.oauth'),namespace='oauth')),
 ]
