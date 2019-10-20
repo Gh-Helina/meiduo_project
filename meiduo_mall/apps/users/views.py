@@ -182,3 +182,13 @@ class UserCenterInfoView(LoginRequiredMixin,View):
 
 
         return render(request,'user_center_info.html')
+#########用户中心代码###############
+    def get(self,request):
+        # 1.获取用户登录信息
+        context={'username':request.user.username,
+                'mobile':request.user.mobile,
+                'email':request.user.email,
+                 'email_active':request.user.email_active,
+                }
+        # 2.传递模型进行渲染
+        return render(request, 'user_center_info.html', context=context)
