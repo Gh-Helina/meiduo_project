@@ -1,3 +1,4 @@
+import json
 import re
 
 from django.contrib.auth import login
@@ -10,6 +11,8 @@ from django.urls import reverse
 from django.views import View
 
 from apps.users.models import User
+from utils.response_code import RETCODE
+
 
 
 class RegisterView(View):
@@ -192,3 +195,27 @@ class UserCenterInfoView(LoginRequiredMixin,View):
                 }
         # 2.传递模型进行渲染
         return render(request, 'user_center_info.html', context=context)
+
+
+############邮件验证##########
+# 必须登录用户,所以继承LoginRequiredMixin
+class EmailView(LoginRequiredMixin,View):
+    def put(self,request):
+        # 1.接收  axios
+        body=request.body
+        body_str=body.decode()
+        # 导入系统json，最后一个json
+        data=json.loads(body_str)
+
+        # 2.验证
+        email=data.get('email')
+        if not email:
+            return HttpResponseBadRequest('缺少email参数')
+        if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
+            return JsonResponse({'code':RETCODE.PARAMERR,'errmsg':'邮箱不符合规则'})
+        # 3.更新数据
+        request.user.email=email
+        request.user.save()
+        # 4.给邮箱发送激活链接
+        # 5.返回响应
+        return JsonResponse({'code':RETCODE.OK,'errmsg':'ok'})
