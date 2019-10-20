@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.views import View
 
 from apps.oauth.models import OAuthQQUser
+from apps.oauth.utils import serect_openid, check_openid
 
 from meiduo_mall import settings
 
@@ -33,6 +34,7 @@ class QQLoginView(View):
         try:
             qquser = OAuthQQUser.objects.get(openid=openid)
         except OAuthQQUser.DoesNotExist:
+
             # 如果数据库中不存在了openid,说明用户没有绑定过了,我们应该让他绑定
             return render(request, 'oauth_callback.html', context={'openid': openid})
         else:
@@ -47,7 +49,6 @@ class QQLoginView(View):
 
             return response
 
-
     def post(self, request):
         """美多商城用户绑定到openid"""
         # ①接收数据
@@ -55,8 +56,7 @@ class QQLoginView(View):
         password = request.POST.get('pwd')
         # pic_code = request.POST.get('pic_code')
         sms_code = request.POST.get('sms_code')
-        secret_openid=request.POST.get('openid')
-
+        secret_openid = request.POST.get('openid')
 
         # ②验证数据
         # #  参数是否齐全
@@ -84,8 +84,10 @@ class QQLoginView(View):
         # if sms_code != sms_code_server:
         #     return render(request, 'oauth_callback.html', {'sms_code_errmsg': '输入短信验证码有误'})
         #
-        #openid解密
-
+        # openid解密
+        openid = check_openid(secret_openid)
+        if openid is None:
+            return HttpResponseBadRequest('openid错误')
 
         # ③根据手机号进行用户信息的查询  user
         try:
@@ -96,7 +98,11 @@ class QQLoginView(View):
             #   如果不存在,说明用户手机号没有注册过,我们就以这个手机号注册一个用户
             user = User.objects.create(username=mobile, password=password, mobile=mobile)
 
-            #加密
+            # 创建完并加密
+            new_openid = serect_openid(openid)
+            # 运行登录检查里会看到加密后的openid
+            # value = "eluqnHjkip6zNjyXf3L2QWXTfcoGhpaf3Nhw71tWZoIiNQeT1zYtEr0DPkcck8mY"
+
         else:
             #    如果存在,则需要验证密码
             from apps.users.models import User
@@ -106,7 +112,7 @@ class QQLoginView(View):
                 return HttpResponseBadRequest('密码错误')
 
                 # ④ 绑定openid 和 user
-            # qquser新创的=qquser
+                # qquser新创的=qquser
         OAuthQQUser.objects.create(user=user, openid=secret_openid)
         # ⑤ 登陆(设置登陆状态,设置cookie,跳转到首页)
         login(request, user)
@@ -116,5 +122,3 @@ class QQLoginView(View):
         response.set_cookie('username', user.username, max_age=24 * 3600)
 
         return response
-
-
