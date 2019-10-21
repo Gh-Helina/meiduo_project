@@ -40,5 +40,5 @@ urlpatterns = [
     #QQ登录
     url(r'^',include(('apps.oauth.urls','apps.oauth'),namespace='oauth')),
 
-    # url(r'^',include(('apps.areas.urls','apps.areas'),namespace='areas')),
+    url(r'^',include(('apps.areas.urls','apps.areas'),namespace='areas')),
 ]
