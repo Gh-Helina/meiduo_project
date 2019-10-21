@@ -240,7 +240,8 @@ class EmailView(LoginRequiredMixin, View):
         # send_mail(subject=subject, message=message, from_email=from_email, recipient_list=recipient_list, html_message=html_mesage)
 
         #任务名.delay 添加到中间人
-
+        from celery_tasks.email.tasks import send_active_email
+        send_active_email.delay(request.user.id,email)
 
         # 5.返回响应
         return JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
