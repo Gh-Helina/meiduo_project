@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views import View
 
 from apps.users.models import User
-from apps.users.utils import generic_active_email_url
+from apps.users.utils import generic_active_email_url, check_active_token
 from utils.response_code import RETCODE
 
 
@@ -220,7 +220,7 @@ class EmailView(LoginRequiredMixin, View):
         request.user.save()
         # 4.给邮箱发送激活链接
         # 导入服务器
-        from django.core.mail import send_mail
+        # from django.core.mail import send_mail
         # subject, message, from_email, recipient_list,
         # subject        主题
         # subject = 'Forever激活邮件'
@@ -246,7 +246,27 @@ class EmailView(LoginRequiredMixin, View):
         # 5.返回响应
         return JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
 
+###########激活邮件####################
 class EmailActiveView(View):
     def get(self,request):
-
-        return HttpResponse('激活成功')
+        # 1.获取token
+        token=request.GET.get('token')
+        if token is None:
+            return HttpResponseBadRequest('缺少参数')
+        # 2.token信息解密
+        data = check_active_token(token)
+        if data is None:
+            return HttpResponseBadRequest('验证失败')
+        # 3.根据用户信息进行数据更新
+        id=data.get('id')
+        email = data.get('email')
+        # 查询用户
+        try:
+            user=User.objects.get(id=id,email=email)
+        except User.DoesNotExist:
+            return HttpResponseBadRequest('验证失败')
+        user.email_active=True
+        user.save()
+        # 4.跳转到个人中心页面
+        return redirect(reverse('users:center'))
+        # return HttpResponse('激活成功')
