@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.views import View
 
 from apps.users.models import User
+from apps.users.utils import generic_active_email_url
 from utils.response_code import RETCODE
 
 
@@ -229,11 +230,19 @@ class EmailView(LoginRequiredMixin, View):
         from_email = '小姐姐<hln1369471@163.com>'
         # recipient_list,  收件人列表
         recipient_list = ['helina0329@163.com']
+        # 用户点击链接，，跳转到激成功页面，同时修改用户邮件状态
 
-        html_mesage = "<a href='http://www.huyouni.com'>戳我有惊喜</a>"
+        # 对用户加密
+        active_url=generic_active_email_url(request.user.id,request.user.email)
+        # html_mesage = "<a href='http://www.meiduo.site:8000/emailactive/'>戳我有惊喜</a>"
+        html_mesage = "<a href='%s'>戳我有惊喜</a>"%active_url
+
         send_mail(subject=subject, message=message, from_email=from_email, recipient_list=recipient_list, html_message=html_mesage)
 
         # 5.返回响应
         return JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
 
+class EmailActiveView(View):
+    def get(self,request):
 
+        return HttpResponse('激活成功')

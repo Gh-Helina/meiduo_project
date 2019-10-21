@@ -112,7 +112,7 @@ class QQLoginView(View):
                 return HttpResponseBadRequest('密码错误')
 
                 # ④ 绑定openid 和 user
-                # qquser新创的=qquser
+                #user新创的=user
         OAuthQQUser.objects.create(user=user, openid=secret_openid)
         # ⑤ 登陆(设置登陆状态,设置cookie,跳转到首页)
         login(request, user)
