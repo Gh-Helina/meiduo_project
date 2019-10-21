@@ -42,7 +42,8 @@ class AreaView(View):
                     'name':city.name,
                 })
                 # 3.返回响应
+            return JsonResponse({'code': RETCODE.OK, 'subs': city_list})
 
-            return JsonResponse(city_list,safe=False)
+            # return JsonResponse(city_list,safe=False)
 
             #响应代码
