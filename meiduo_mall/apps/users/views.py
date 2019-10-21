@@ -270,3 +270,8 @@ class EmailActiveView(View):
         # 4.跳转到个人中心页面
         return redirect(reverse('users:center'))
         # return HttpResponse('激活成功')
+
+############省市区渲染###############
+class UserCentSiteView(View):
+    def get(self,request):
+        return render(request,'user_center_site.html')

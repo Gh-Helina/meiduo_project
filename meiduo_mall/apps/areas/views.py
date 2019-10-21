@@ -7,6 +7,9 @@ from django.views import View
 from apps.areas.models import Area
 
 ##########获取市区县###############
+from utils.response_code import RETCODE
+
+
 class AreaView(View):
     def get(self,request):
         parent_id=request.GET.get('area_id')
@@ -21,8 +24,8 @@ class AreaView(View):
                     'id':pro.id,
                     'name':pro.name,
                 })
-
-            return JsonResponse(pro_list,safe=False)
+            return JsonResponse({'code': RETCODE.OK, 'province_list': pro_list})
+            # return JsonResponse(pro_list,safe=False)
 
         else:
             # 市/区县
@@ -39,4 +42,7 @@ class AreaView(View):
                     'name':city.name,
                 })
                 # 3.返回响应
+
             return JsonResponse(city_list,safe=False)
+
+            #响应代码
