@@ -22,7 +22,7 @@ class User(AbstractUser):
         return self.username
 
 
-##############地址新增##################
+##############地址模型##################
 from utils.models import BaseModel
 
 class Address(BaseModel):

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.oauth',
     'apps.areas',
+    'apps.goods',
 ]
 
 MIDDLEWARE = [
