@@ -14,7 +14,9 @@ from django.core.cache import cache
 
 class AreaView(View):
     def get(self, request):
+        # 1.获取area_d
         parent_id = request.GET.get('area_id')
+        # 判断
         if parent_id is None:
             # 省
             # 先读取缓存
@@ -28,6 +30,7 @@ class AreaView(View):
                 # JsonResponse默认是可以对字典进行json转换的
                 # pro_list=[]
                 cache_pro = []
+                # for pro in pro_list:
                 for pro in proviences:
                     # pro_list.append({
                     cache_pro.append({
@@ -37,6 +40,7 @@ class AreaView(View):
                 # 设置缓存,可以用redis，也可以用系统集成的cache
                 cache.set('cache_pro', cache_pro, 24 * 3600)
 
+            # return JsonResponse({'code': RETCODE.OK, 'province_list': pro_list})
             return JsonResponse({'code': RETCODE.OK, 'province_list': cache_pro})
             # return JsonResponse(pro_list,safe=False)
 

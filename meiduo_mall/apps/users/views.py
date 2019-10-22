@@ -260,14 +260,15 @@ class EmailActiveView(View):
         # 3.根据用户信息进行数据更新
         id=data.get('id')
         email = data.get('email')
-        # 查询用户
+        # 4.查询用户
         try:
             user=User.objects.get(id=id,email=email)
         except User.DoesNotExist:
             return HttpResponseBadRequest('验证失败')
+        #设置邮件激活状态
         user.email_active=True
         user.save()
-        # 4.跳转到个人中心页面
+        # 5.跳转到个人中心页面
         return redirect(reverse('users:center'))
         # return HttpResponse('激活成功')
 
