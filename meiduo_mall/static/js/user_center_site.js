@@ -1,4 +1,5 @@
 var vm = new Vue({
+
     el: '#app',
     // 修改Vue变量的读取语法，避免和django模板语法冲突
     delimiters: ['[[', ']]'],
@@ -18,6 +19,11 @@ var vm = new Vue({
             mobile: '',
             tel: '',
             email: '',
+            addresses: JSON.parse(JSON.stringify(addresses)),
+            default_address_id: default_address_id,
+            editing_address_index: '',
+            edit_title_index: '',
+            input_title: '',
         },
         error_receiver: false,
         error_place: false,
@@ -29,7 +35,7 @@ var vm = new Vue({
         default_address_id: '',
         edit_title_index: '',
         input_title: '',
-        add_title:'新  增'
+        add_title: '新  增'
     },
     mounted(){
         // 获取省份数据
@@ -171,16 +177,17 @@ var vm = new Vue({
             this.form_address.mobile = '';
             this.form_address.tel = '';
             this.form_address.email = '';
-            this.add_title='增  加';
+            this.add_title = '增  加';
         },
         // 展示编辑地址弹框时
         show_edit_site(index){
             this.is_show_edit = true;
             this.clear_all_errors();
+
             this.editing_address_index = index.toString();
             // 只获取要编辑的数据，防止修改form_address影响到addresses数据
             this.form_address = JSON.parse(JSON.stringify(this.addresses[index]));
-            this.add_title='修  改';
+            this.add_title = '修  改';
         },
         // 新增地址
         save_address(){
@@ -258,6 +265,7 @@ var vm = new Vue({
             }
         },
         // 删除地址
+
         delete_address(index){
             var url = this.host + '/addresses/' + this.addresses[index].id + '/';
             axios.delete(url, {
