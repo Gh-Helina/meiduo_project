@@ -1,8 +1,9 @@
 import json
 import re
 
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseForbidden
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -10,10 +11,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
-from apps.users.models import User
+from apps.users.models import User, Address
 from apps.users.utils import generic_active_email_url, check_active_token
 from utils.response_code import RETCODE
-
+from utils.users import logger
 
 
 class RegisterView(View):
